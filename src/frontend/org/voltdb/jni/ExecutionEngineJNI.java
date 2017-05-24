@@ -745,6 +745,11 @@ public class ExecutionEngineJNI extends ExecutionEngine {
         m_fallbackBuffer = buffer;
     }
 
+    public int callJavaUserDefinedFunction(int functionId) {
+        System.out.println("callJavaUserDefinedFunction " + functionId);
+        return 0;
+    }
+
     @Override
     public byte[] executeTask(TaskType taskType, ByteBuffer task) throws EEException {
         try {

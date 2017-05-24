@@ -85,6 +85,7 @@ private:
     jmethodID m_pushDRBufferMID;
     jmethodID m_reportDRConflictMID;
     jmethodID m_decodeBase64AndDecompressToBytesMID;
+    jmethodID m_callJavaUserDefinedFunctionMID;
     jclass m_exportManagerClass;
     jclass m_partitionDRGatewayClass;
     jclass m_encoderClass;

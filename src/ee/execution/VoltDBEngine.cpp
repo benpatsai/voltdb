@@ -555,6 +555,11 @@ UniqueTempTableResult VoltDBEngine::executePlanFragment(ExecutorVector* executor
     return result;
 }
 
+NValue VoltDBEngine::callUserDefinedFunction(int functionId, const std::vector<NValue>& arguments) {
+    m_topend->callJavaUserDefinedFunction(functionId);
+    return NValue::getNullValue(VALUE_TYPE_BIGINT);
+}
+
 void VoltDBEngine::releaseUndoToken(int64_t undoToken) {
     if (m_currentUndoQuantum != NULL && m_currentUndoQuantum->getUndoToken() == undoToken) {
         m_currentUndoQuantum = NULL;
