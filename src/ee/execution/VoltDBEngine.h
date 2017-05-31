@@ -103,6 +103,11 @@ public:
     void operator()(TempTable* tbl) const;
 };
 
+struct UserDefinedFunctionInfo {
+    std::vector<ValueType> paramTypes;
+    ValueType returnType;
+};
+
 // UniqueTempTableResult is a smart pointer wrapper around a temp
 // table.  It doesn't delete the temp table, but it will delete the
 // contents of the table when it goes out of scope.
@@ -586,6 +591,8 @@ class __attribute__((visibility("default"))) VoltDBEngine {
 
         // map catalog table name to table pointers
         std::map<std::string, Table*> m_tablesByName;
+
+        std::map<int, UserDefinedFunctionInfo> m_functionInfo;
 
         /*
          * Map of catalog table ids to snapshotting tables.

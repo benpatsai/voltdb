@@ -30,6 +30,7 @@ import org.voltdb.PrivateVoltTableFactory;
 import org.voltdb.StatsSelector;
 import org.voltdb.TableStreamType;
 import org.voltdb.TheHashinator.HashinatorConfig;
+import org.voltdb.UserDefinedFunctionManager.UserDefinedFunctionRunner;
 import org.voltdb.VoltDB;
 import org.voltdb.VoltTable;
 import org.voltdb.exceptions.EEException;
@@ -747,6 +748,9 @@ public class ExecutionEngineJNI extends ExecutionEngine {
 
     public int callJavaUserDefinedFunction(int functionId) {
         System.out.println("callJavaUserDefinedFunction " + functionId);
+        UserDefinedFunctionRunner udfRunner = m_functionManager.getFunctionRunnerById(functionId);
+        assert(udfRunner != null);
+        udfRunner.call(m_udfBuffer);
         return 0;
     }
 

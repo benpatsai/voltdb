@@ -30,6 +30,7 @@ import org.voltcore.logging.VoltLogger;
 import org.voltcore.utils.CoreUtils;
 import org.voltcore.utils.DBBPool;
 import org.voltcore.utils.Pair;
+import org.voltdb.CatalogContext;
 import org.voltdb.PlannerStatsCollector;
 import org.voltdb.PlannerStatsCollector.CacheUse;
 import org.voltdb.PrivateVoltTableFactory;
@@ -37,6 +38,7 @@ import org.voltdb.StatsAgent;
 import org.voltdb.StatsSelector;
 import org.voltdb.TableStreamType;
 import org.voltdb.TheHashinator.HashinatorConfig;
+import org.voltdb.UserDefinedFunctionManager;
 import org.voltdb.VoltDB;
 import org.voltdb.VoltTable;
 import org.voltdb.exceptions.EEException;
@@ -156,6 +158,12 @@ public abstract class ExecutionEngine implements FastDeserializer.Deserializatio
     public long m_lastTuplesAccessed = 0;
     public long m_currMemoryInBytes = 0;
     public long m_peakMemoryInBytes = 0;
+
+    protected UserDefinedFunctionManager m_functionManager = new UserDefinedFunctionManager();
+
+    public void loadFunctions(CatalogContext catalogContext) {
+        m_functionManager.loadFunctions(catalogContext);
+    }
 
     /** Make the EE clean and ready to do new transactional work. */
     public void resetDirtyStatus() {

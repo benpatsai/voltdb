@@ -54,6 +54,7 @@
 #include "catalog/columnref.h"
 #include "catalog/connector.h"
 #include "catalog/database.h"
+#include "catalog/function.h"
 #include "catalog/index.h"
 #include "catalog/materializedviewhandlerinfo.h"
 #include "catalog/materializedviewinfo.h"
@@ -112,6 +113,7 @@ ENABLE_BOOST_FOREACH_ON_CONST_MAP(Column);
 ENABLE_BOOST_FOREACH_ON_CONST_MAP(Index);
 ENABLE_BOOST_FOREACH_ON_CONST_MAP(MaterializedViewInfo);
 ENABLE_BOOST_FOREACH_ON_CONST_MAP(Table);
+ENABLE_BOOST_FOREACH_ON_CONST_MAP(Function);
 
 static const size_t PLAN_CACHE_SIZE = 1000;
 // table name prefix of DR conflict table
@@ -126,6 +128,7 @@ typedef std::pair<std::string, catalog::Column*> LabeledColumn;
 typedef std::pair<std::string, catalog::Index*> LabeledIndex;
 typedef std::pair<std::string, catalog::Table*> LabeledTable;
 typedef std::pair<std::string, catalog::MaterializedViewInfo*> LabeledView;
+typedef std::pair<std::string, catalog::Function*> LabeledFunction;
 
 /**
  * The set of plan bytes is explicitly maintained in MRU-first order,
@@ -556,6 +559,10 @@ UniqueTempTableResult VoltDBEngine::executePlanFragment(ExecutorVector* executor
 }
 
 NValue VoltDBEngine::callUserDefinedFunction(int functionId, const std::vector<NValue>& arguments) {
+    resetUDFOutputBuffer();
+    for (int i = 0; i < arguments.size(); i++) {
+        arguments[i].serializeTo(m_udfOutput);
+    }
     m_topend->callJavaUserDefinedFunction(functionId);
     return NValue::getNullValue(VALUE_TYPE_BIGINT);
 }
@@ -1096,6 +1103,11 @@ bool VoltDBEngine::processCatalogAdditions(bool isStreamUpdate, int64_t timestam
                 persistentTable->dropMaterializedView(toDrop);
             }
         }
+    }
+
+    BOOST_FOREACH (LabeledFunction labeledFunction, m_database->functions()) {
+//        auto catalogFunction = labeledFunction.second;
+
     }
 
     // new plan fragments are handled differently.
